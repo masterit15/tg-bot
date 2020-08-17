@@ -1,0 +1,17 @@
+{
+  "name": "site_parser",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "nodemon": "^2.0.4",
+    "telegram-bot-api": "^2.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "index.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
