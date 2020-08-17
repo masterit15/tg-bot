@@ -23,6 +23,7 @@ bot.on('message', (msg) => {
   bot.sendMessage(chatId, 'Привет, Друг!');
 });
 
+
 bot.getMe()
 .then(res => {
   //console.log(res)
