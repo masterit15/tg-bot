@@ -1,10 +1,8 @@
 const express = require('express')
-const TG = require('telegram-bot-api')
+
 const cors = require('cors')
 const path = require('path')
 const { app, server } = require('./socket')
-
-const bot = new TG({ token: '1186953147:AAGDJAC-B5VbeMn3D5mk-Q3P1QlVuN0e9YA' })
 
 app.use(express.json({ extended: true }))
 app.use(cors())
@@ -16,7 +14,7 @@ app.use(function (req, res, next) {
 });
 
 app.use(express.static(__dirname));
-// app.use('/auth', require('./routes/auth.routes'))
+app.use('/bot', require('./routes/bot.routes'))
 // app.use('/posts', require('./routes/post.routes'))
 // app.use('/chat', require('./routes/chat.routes'))
 // app.use('/upload', require('./routes/upload.routes'))
@@ -32,18 +30,6 @@ const PORT = 3000
 
 async function start() {
   try {
-    bot.on('message', (msg) => {
-      console.log('msg', msg)
-      const chatId = msg.chat.id;
-      bot.sendMessage(chatId, 'Привет, Друг!');
-    });
-
-
-    bot.getMe()
-      .then(res => {
-        //console.log(res)
-      })
-      .catch(console.err)
     server.listen(PORT, () => console.log(`App has been started on port ${PORT}...`))
     console.log('Connection has been established successfully.');
   } catch (error) {
