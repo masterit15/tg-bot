@@ -1,7 +1,7 @@
 const express = require('express')
 const TG = require('telegram-bot-api')
 const cors = require('cors')
-const { app, server } = require('./chat')
+const { app, server } = require('./socket')
 
 const bot = new TG({ token: '1186953147:AAGDJAC-B5VbeMn3D5mk-Q3P1QlVuN0e9YA' })
 
