@@ -15,15 +15,15 @@ app.use(function (req, res, next) {
 });
 
 app.use(express.static(__dirname));
-app.use('/auth', require('./routes/auth.routes'))
-app.use('/posts', require('./routes/post.routes'))
-app.use('/chat', require('./routes/chat.routes'))
-app.use('/upload', require('./routes/upload.routes'))
+// app.use('/auth', require('./routes/auth.routes'))
+// app.use('/posts', require('./routes/post.routes'))
+// app.use('/chat', require('./routes/chat.routes'))
+// app.use('/upload', require('./routes/upload.routes'))
 
 if (process.env.NODE_ENV === 'production') {
-  app.use('/', express.static(path.join(__dirname, 'client', 'dist')))
+  app.use('/', express.static(path.join(__dirname, 'client')))
   app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'client', 'dist', 'index.html'))
+    res.sendFile(path.resolve(__dirname, 'client', 'index.html'))
   })
 }
 
@@ -31,6 +31,18 @@ const PORT = 3000
 
 async function start() {
   try {
+    bot.on('message', (msg) => {
+      console.log('msg', msg)
+      const chatId = msg.chat.id;
+      bot.sendMessage(chatId, 'Привет, Друг!');
+    });
+
+
+    bot.getMe()
+      .then(res => {
+        //console.log(res)
+      })
+      .catch(console.err)
     server.listen(PORT, () => console.log(`App has been started on port ${PORT}...`))
     console.log('Connection has been established successfully.');
   } catch (error) {
@@ -39,16 +51,3 @@ async function start() {
 }
 
 start()
-console.log('bot', bot)
-bot.on('message', (msg) => {
-  console.log('msg', msg)
-  const chatId = msg.chat.id;
-  bot.sendMessage(chatId, 'Привет, Друг!');
-});
-
-
-bot.getMe()
-.then(res => {
-  //console.log(res)
-})
-.catch(console.err)
