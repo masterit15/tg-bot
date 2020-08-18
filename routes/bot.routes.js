@@ -13,7 +13,6 @@ bot.getMe()
     метод получения
 */
 router.get('/', (req, res) => {
-  
   bot.on('message', (msg) => {
     console.log('msg', msg)
     const chatId = msg.chat.id;

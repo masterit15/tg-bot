@@ -1,10 +1,14 @@
 const express = require('express')
-
 const cors = require('cors')
 const path = require('path')
+const bodyParser = require('body-parser')
 const { app, server } = require('./socket')
 
-app.use(express.json({ extended: true }))
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+
+// parse application/json
+app.use(bodyParser.json())
 app.use(cors())
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
@@ -16,14 +20,14 @@ app.use(function (req, res, next) {
 app.use(express.static(__dirname));
 app.use('/bot', require('./routes/bot.routes'))
 
-// if (process.env.NODE_ENV === 'production') {
-//   app.use('/', express.static(path.join(__dirname, 'client')))
-//   app.get('*', (req, res) => {
-//     res.sendFile(path.resolve(__dirname, 'client', 'index.html'))
-//   })
-// }
+if (process.env.NODE_ENV === 'production') {
+  app.use('/', express.static(path.join(__dirname, 'client')))
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'client', 'index.html'))
+  })
+}
 
-const PORT = 3000
+const PORT = 5000
 
 async function start() {
   try {
