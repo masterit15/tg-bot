@@ -15,16 +15,13 @@ app.use(function (req, res, next) {
 
 app.use(express.static(__dirname));
 app.use('/bot', require('./routes/bot.routes'))
-// app.use('/posts', require('./routes/post.routes'))
-// app.use('/chat', require('./routes/chat.routes'))
-// app.use('/upload', require('./routes/upload.routes'))
 
-if (process.env.NODE_ENV === 'production') {
-  app.use('/', express.static(path.join(__dirname, 'client')))
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'client', 'index.html'))
-  })
-}
+// if (process.env.NODE_ENV === 'production') {
+//   app.use('/', express.static(path.join(__dirname, 'client')))
+//   app.get('*', (req, res) => {
+//     res.sendFile(path.resolve(__dirname, 'client', 'index.html'))
+//   })
+// }
 
 const PORT = 3000
 
