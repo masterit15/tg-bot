@@ -18,7 +18,7 @@ app.use(function (req, res, next) {
 });
 
 app.use(express.static(__dirname));
-app.use('/bot', require('./routes/bot.routes'))
+app.use('/', require('./routes/bot.routes'))
 
 if (process.env.NODE_ENV === 'production') {
   app.use('/', express.static(path.join(__dirname, 'client')))
