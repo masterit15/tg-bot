@@ -4,13 +4,17 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "mysql2": "^2.1.0",
+    "node-telegram-bot-api": "^0.50.0",
     "nodemon": "^2.0.4",
-    "telegram-bot-api": "^2.0.1"
+    "path": "^0.12.7",
+    "sequelize": "^6.3.4",
+    "socket.io": "^2.3.0"
   },
   "devDependencies": {},
   "scripts": {
     "dev": "nodemon index.js",
-    "start": "index.js"
+    "start": "node index.js"
   },
   "author": "",
   "license": "ISC"
