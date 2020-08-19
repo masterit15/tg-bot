@@ -1,41 +1,24 @@
-const express = require('express')
-const cors = require('cors')
-const path = require('path')
-const bodyParser = require('body-parser')
-const { app, server } = require('./socket')
+const TelegramBot = require('node-telegram-bot-api');
+const token = '1186953147:AAGDJAC-B5VbeMn3D5mk-Q3P1QlVuN0e9YA';
+const bot = new TelegramBot(token, { polling: true });
+const router = Router()
 
-// parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }))
+/*
+    метод получения
+*/
+router.get('/', (req, res) => {
 
-// parse application/json
-app.use(bodyParser.json())
-app.use(cors())
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
-  next();
+
+  bot.onText(/\/echo (.+)/, (msg, match) => {
+    const chatId = msg.chat.id;
+    const resp = match[1]; // the captured "whatever"
+    bot.sendMessage(chatId, resp);
+  });
+
+  bot.on('message', (msg) => {
+    const chatId = msg.chat.id;
+    bot.sendMessage(chatId, 'Получили твое сообщение! Спасибо!');
+  });
+
+
 });
-
-app.use(express.static(__dirname));
-app.use('/', require('./routes/bot.routes'))
-
-if (process.env.NODE_ENV === 'production') {
-  app.use('/', express.static(path.join(__dirname, 'client')))
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'client', 'index.html'))
-  })
-}
-
-const PORT = 5000
-
-async function start() {
-  try {
-    server.listen(PORT, () => console.log(`App has been started on port ${PORT}...`))
-    console.log('Connection has been established successfully.');
-  } catch (error) {
-    console.error('Unable to connect to the database:', error);
-  }
-}
-
-start()
