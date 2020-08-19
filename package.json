@@ -4,9 +4,11 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "mysql2": "^2.1.0",
     "node-telegram-bot-api": "^0.50.0",
     "nodemon": "^2.0.4",
     "path": "^0.12.7",
+    "sequelize": "^6.3.4",
     "socket.io": "^2.3.0"
   },
   "devDependencies": {},
