@@ -2,19 +2,29 @@ const db = require('./db')
 const TelegramBot = require('node-telegram-bot-api');
 const token = '1186953147:AAGDJAC-B5VbeMn3D5mk-Q3P1QlVuN0e9YA';
 const bot = new TelegramBot(token, { polling: true });
-
 const Site = require('./model/Sites')
-
 const request = require('request');
-async function testSite(){
-  sitesArr = await Site.findAll({raw: true })
-  sitesArr.forEach(site => {
-      request(site.url, function (err, res, body) {
-        if (err){
-          bot.sendMessage(site.chatId, `Сайт ${site.url}, не доступен!!!`);
-        } 
+async function testSite(test=false){
+    let sitesArr = await Site.findAll({raw: true })
+    if(test){
+      sitesArr.forEach(site => {
+        request(site.url, function (err, res, body) {
+          if (err){
+            bot.sendMessage(site.chatId, `Сайт ${site.url}, не доступен!!!`);
+          }else{
+            bot.sendMessage(site.chatId, `C сайтом ${site.url}, все хорошо!!!`);
+          }
       });
-  });
+    });
+    }else{
+      sitesArr.forEach(site => {
+        request(site.url, function (err, res, body) {
+            if (err){
+              bot.sendMessage(site.chatId, `Сайт ${site.url}, не доступен!!!`);
+            } 
+        });
+      });
+    }
 }
 setInterval(() => {
   testSite()
@@ -26,15 +36,15 @@ function isValidUrl(url) {
 }
 async function addS(msg){
   let chatId = msg.chat.id;
-  let comannd = msg.text.split('/add ')
+  let comannd = msg.text.split(' ')
   let url = comannd[1]
   if (isValidUrl(url)) {
-    let site = await Site.findOne({ where: { url: url }, raw: true })
+    let site = await Site.findOne({ where: { url }, raw: true })
     if (site) {
       bot.sendMessage(chatId, `${msg.from.first_name}, такой сайт ты уже добавлял, не еби мозг, тебе надо ты и добавь ПОНЯЛЛЛ!!!`);
     } else {
       Site.create({
-        url: url,
+        url,
         date: new Date(),
         chatId
       }).then(sites => {
@@ -48,11 +58,11 @@ async function addS(msg){
     bot.sendMessage(chatId, `${msg.from.first_name}, ты это серьезно? Это же не ссылка ни хуя, не заебывай!!!`);
   }
 }
-async function deleteS(msg){
-  let comannd = msg.text.split('/delete ')
-  let url = comannd[1]
-  let site = await Site.findOne({ where: { url: url }, raw: true })
-  console.log(site)
+async function deleteS(url, chatId){
+  let site = await Site.destroy({ where: { url }, raw: true })
+  if(site){
+    bot.sendMessage(chatId, `${url}, успешно удален!!!`);
+  }
 }
 async function start() {
   try {
@@ -66,17 +76,19 @@ async function start() {
     });
 
     bot.on('message', async (msg) => {
+      let comannd = msg.text.split(' ')
       console.log(msg)
-      const chat = msg.chat.id;
-      if (msg.entities[0].type == 'bot_command'){
-        console.log('bot_command', )
-        if (msg.text == '/add'){
+      if (msg.entities && msg.entities[0].type == 'bot_command'){
+        if (comannd[0] == '/add'){
           addS(msg)
-        } else if (msg.text == '/delete'){
-          deleteS(msg)
+        } else if (comannd[0] == '/delete'){
+          deleteS(comannd[1], msg.chat.id)
+        }else if (comannd[0] == '/test'){
+          testSite(true)
+        }else{
+          bot.sendMessage(chatId, `${msg.from.first_name}, ты это серьезно? Это же не ссылка ни хуя, не заебывай!!!`);
         }
       }
-      
     });
 
   } catch (error) {
