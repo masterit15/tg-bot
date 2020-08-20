@@ -1,7 +1,8 @@
 const Sequelize = require("sequelize");
-const sequelize = new Sequelize("tgbot", "root", "root", {
+const sequelize = new Sequelize("tgbot", "tgbot", "eM3gK0qQ", {
   dialect: "mysql",
-  host: "127.0.0.1",
+  host: "188.120.232.140",
+  port: 3311,
   define: {
     timestamps: false
   },
