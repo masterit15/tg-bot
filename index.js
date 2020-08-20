@@ -4,37 +4,25 @@ const token = '1186953147:AAGDJAC-B5VbeMn3D5mk-Q3P1QlVuN0e9YA';
 const bot = new TelegramBot(token, { polling: true });
 const Site = require('./model/Sites')
 const request = require('request');
-async function testSite(test=false){
-    let sitesArr = await Site.findAll({raw: true })
-    if(test){
-      sitesArr.forEach(site => {
-        request(site.url, function (err, res, body) {
-          if (err){
-            bot.sendMessage(site.chatId, `Сайт ${site.url}, не доступен!!!`);
-          }else{
-            bot.sendMessage(site.chatId, `C сайтом ${site.url}, все хорошо!!!`);
-          }
-      });
+async function testSite(test = false) {
+  let sitesArr = await Site.findAll({ raw: true })
+  sitesArr.forEach(site => {
+    request(site.url, function (err, res, body) {
+      if (err) {
+        bot.sendMessage(site.chatId, `Сайт ${site.url}, не доступен!!!`);
+      }
     });
-    }else{
-      sitesArr.forEach(site => {
-        request(site.url, function (err, res, body) {
-            if (err){
-              bot.sendMessage(site.chatId, `Сайт ${site.url}, не доступен!!!`);
-            } 
-        });
-      });
-    }
+  });
 }
 setInterval(() => {
   testSite()
-}, 2400000);
+}, 1800000);
 
 function isValidUrl(url) {
   let objRE = /(^https?:\/\/)?[a-z0-9~_\-\.]+\.[a-z]{2,9}(\/|:|\?[!-~]*)?$/i;
   return objRE.test(url);
 }
-async function addS(msg){
+async function addS(msg) {
   let chatId = msg.chat.id;
   let comannd = msg.text.split(' ')
   let url = comannd[1]
@@ -58,9 +46,9 @@ async function addS(msg){
     bot.sendMessage(chatId, `${msg.from.first_name}, ты это серьезно? Это же не ссылка ни хуя, не заебывай!!!`);
   }
 }
-async function deleteS(url, chatId){
+async function deleteS(url, chatId) {
   let site = await Site.destroy({ where: { url }, raw: true })
-  if(site){
+  if (site) {
     bot.sendMessage(chatId, `${url}, успешно удален!!!`);
   }
 }
@@ -78,14 +66,14 @@ async function start() {
     bot.on('message', async (msg) => {
       let comannd = msg.text.split(' ')
       console.log(msg)
-      if (msg.entities && msg.entities[0].type == 'bot_command'){
-        if (comannd[0] == '/add'){
+      if (msg.entities && msg.entities[0].type == 'bot_command') {
+        if (comannd[0] == '/add') {
           addS(msg)
-        } else if (comannd[0] == '/delete'){
+        } else if (comannd[0] == '/delete') {
           deleteS(comannd[1], msg.chat.id)
-        }else if (comannd[0] == '/test'){
+        } else if (comannd[0] == '/test') {
           testSite(true)
-        }else{
+        } else {
           bot.sendMessage(chatId, `${msg.from.first_name}, ты это серьезно? Это же не ссылка ни хуя, не заебывай!!!`);
         }
       }
